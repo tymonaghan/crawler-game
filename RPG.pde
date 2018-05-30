@@ -1,9 +1,12 @@
 //RPG GAME concept
-Button playButton, exitButton;
+Button playButton, exitButton, loadoutButton;
 BattleMenu battleMenu;
-int mX, mY = 0;
+BattleGrid battleGrid;
+PlayerCharacter playerCharacter;
+int mX, mY, status, systemBusy = 0;
 int frames = 1;
 color[] colorScheme  = new color[16];
+int[] playerInventory = new int[10];
 int gameState = 0;
 int zone = 0;
 PImage walkingCharacter1, walkingCharacter2, coveringCharacter, firingCharacter;
@@ -15,6 +18,7 @@ static class GameState {
   static final int mainMenu = 0;
   static final int travel = 1;
   static final int battle = 2;
+  static final int loadout = 3;
 }
 
 static class Zone {
