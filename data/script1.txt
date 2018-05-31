@@ -1,0 +1,8 @@
+Player: What the hell is this.
+Control: You have an important mission.
+Control: Walk down that street.
+Control: Kill everyone.
+Player: That sounds great!
+Control: First you will need to gear up.
+Control: Spend Intel Points on new gear.
+Player: Over and Out.

@@ -8,12 +8,9 @@ class PlayerCharacter {
   } //end playerCharacter constructor
 
   void playerAction(int i) { //  0 attack, 1 advance, 2 support, 3 flank, 4 cover, 5 retreat
-    if (i==0) {
-      int n = 0;
-      while (n <10) {
-        status=1;
-        n++;
-      }
+    if (i==0) { //code for attack
+    battleMenu.attackMenu();
+      
       status=0;
       println("attack");
       return;
@@ -134,7 +131,7 @@ class PlayerCharacter {
   void loadoutScreen(int[] inv_) {
     playerInventory = inv_;
     int bestWeapon=0;
-    if (playerInventory[3] > 0){
+    if (playerInventory[3] > 0) {
       bestWeapon = 3;
     } else if (playerInventory[2] !=0) {
       bestWeapon = 2;
@@ -143,8 +140,8 @@ class PlayerCharacter {
     } else {
       bestWeapon = 0;
     } // end if-els    
-
-      rectMode(CENTER);
+    rectMode(CENTER);
     image(imageAssets[bestWeapon], .45*width, 0.25*height, imageAssets[bestWeapon].width*3, imageAssets[bestWeapon].height*3);
   } //end loadoutScreen
+
 }

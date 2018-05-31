@@ -1,15 +1,29 @@
 void playGame(int state) {
-  if (state == 0) {
+
+  switch (gameState) {
+  case EGameState.mainMenu:
     mainMenu();
-  } else if (state == 1) {
+    break;
+
+  case EGameState.travel:
     travel();
-  } else if (state == 2) {
+    break;
+
+  case EGameState.battle:
     battle();
-  } else if (state == 3) {
+    break;
+
+  case EGameState.loadout:
     gunshop.display();
-  } else if (state == 99) {
+    break;
+
+  case EGameState.dead:
     deadScreen();
-  }// end ifs
+    break;
+    
+  case EGameState.dialog:
+  dialog0.playScene();
+  } // end switch
 } //end playGame
 
 
@@ -17,6 +31,8 @@ void playGame(int state) {
 void mainMenu() {
   stroke(255);
   background(100);
+  imageMode(CENTER);
+  image(imageAssets[4], width/2, height/2);
   playButton.display(150, 50, 0, 1, "PLAY");
   playButton.clickCheck(mouseX, mouseY, 1);
   loadoutButton.display(150, 50, 0, 2, "Loadout");
@@ -40,8 +56,8 @@ void battle() {
   battleMenu.display();
   battleMenu.drawCursor();
   battleMenu.interact();
-  killPlayer.quickDisplay("kill");
-  killPlayer.clickCheckTwo(5);
+  talkTest.quickDisplay("kill");
+  talkTest.clickCheckTwo(5);
   playerCharacter.statusBar(playerInventory);
   battleGrid.spawnEncounter();//this is looping , need to get it to just run once per encounter.
   playerCharacter.characterInCombat(status);

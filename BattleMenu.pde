@@ -63,6 +63,7 @@ class BattleMenu {
         }
       } // end left/right
     } //end if keypressed & coded
+   
     noStroke();
     fill(colorScheme[4]);
     triangle(menuX+25+cursorX*170, menuY+20+(cursorY*30), menuX+20+cursorX*170, menuY+25+(cursorY*30), menuX+20+cursorX*170, menuY+15+(cursorY*30));
@@ -73,7 +74,23 @@ class BattleMenu {
     cursorLocation = this.drawCursor();
     if (keyPressed == true && key == ' ') {
       playerCharacter.playerAction(cursorLocation);
+      ticker = 0;
     } // end if space is pressed
     return cursorLocation;
   } // end interact
+  
+  void attackMenu() {
+    
+    textFont(battleMenuFont);
+    stroke(textColor);
+    fill(bgColor);
+    strokeWeight(5);
+    rectMode(CORNER);
+    rect(menuX+20, menuY+20, menuWidth, menuHeight);
+    fill(textColor);
+    textMode(CORNER);
+    textAlign(LEFT, TOP);
+    text("Knife",menuX+40,menuY+30);
+    noLoop();
+  }
 } // end battlemenu

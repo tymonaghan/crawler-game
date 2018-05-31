@@ -1,10 +1,11 @@
 class Button {
   color bgColor, textColor;
-  int xPos, yPos, buttonWidth, buttonHeight, stringNumber, buttonFunction;
+  float xPos, yPos;
+  int buttonWidth, buttonHeight, stringNumber, buttonFunction;
   String buttonText;
 
 
-  Button(int x_, int y_) { // button constructor (xposition, yposition)
+  Button(float x_, float y_) { // button constructor (xposition, yposition)
     xPos = x_;
     yPos = y_;
   } // end button constructor
@@ -34,11 +35,11 @@ class Button {
     yPos = 100;
     rectMode(CENTER);
     fill(colorScheme[0]);
-    rect(xPos, yPos, buttonWidth,buttonHeight);
+    rect(xPos, yPos, buttonWidth, buttonHeight);
     fill(colorScheme[4]);
     textAlign(CENTER, CENTER);
     textFont(menuFont);
-    text(buttonText, xPos,yPos);
+    text(buttonText, xPos, yPos);
   } // end quick display
 
 

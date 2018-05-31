@@ -1,15 +1,16 @@
 //RPG GAME concept
-Button playButton, exitButton, loadoutButton, killPlayer;
+Button playButton, exitButton, loadoutButton, talkTest;
 BattleMenu battleMenu;
 BattleGrid battleGrid;
 PlayerCharacter playerCharacter;
 Loadout gunshop;
+Dialog dialog0;
 int mX, mY, status, systemBusy = 0;
 int frames = 1;
 color[] colorScheme  = new color[16];
 int[] playerInventory = new int[8];
 PImage[] inventoryIcons = new PImage[8];
-PImage[] imageAssets = new PImage[2]; // change this number to add images as i work
+PImage[] imageAssets = new PImage[5]; // change this number to add images as i work
 int gameState = 0;
 int zone = 0;
 int intelPoints = 100;
@@ -22,11 +23,13 @@ IntDict loadout;
 StringList itemNotes;
 IntList itemPrices;
 
-static class GameState {
+static class EGameState {
   static final int mainMenu = 0;
   static final int travel = 1;
   static final int battle = 2;
   static final int loadout = 3;
+  static final int dialog = 4;
+  static final int dead = 99;
 }
 
 static class Zone {
@@ -34,15 +37,16 @@ static class Zone {
   static final int desert = 1;
 }
 
-void setup(){
-  size(800,600);
+void setup() {
+  size(800, 600);
   setupFunctions();
 }
 
-void draw(){
+void draw() {
   playGame(gameState);
   crawlerText(frames);
   printInventory();
+  talkTest.quickDisplay("talk");
+  talkTest.clickCheck(mouseX,mouseY,4);
   frames++;
-
 } //end draw
