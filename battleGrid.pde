@@ -25,5 +25,34 @@ class BattleGrid {
     //println("badguy qty: "+badGuyCount);
     //println("badguy lvl: "+badGuyLevel);
     return encounterInfo;
-  }//end display
+  }//end spawnEncounter
+  
+  void drawGrid(){
+    strokeWeight(1);
+    stroke(colorScheme[1]);
+    line(.35*width, .12*height, .3*width, .6*height); //draw the lines of the grid
+    line(.55*width, .12*height, .5*width, .6*height);
+    line(.2*width, .25*height, .68*width, .25*height);
+    line(.18*width, .45*height, .66*width, .45*height);
+  } //end drawGrid
+    
+  int getGridRowCenter(int row_){
+    int row = row_;
+    int row0yCenter = int(.16*height);
+    int row1yCenter = int(.35*height);
+    int row2yCenter = int(.525*height);
+    if (row == 0 ){
+    return row0yCenter;
+    } else if (row == 1) { 
+      return row1yCenter;
+    } else if (row == 2) {
+      return row2yCenter;
+    } //end ifs
+    return 0;
+  } //end getGridColCenter
+  
+  void drawEnemies(){ //calls the Enemy.display(enemyLevel) function to draw enemies on the grid
+    imageMode(CENTER);
+    goon.display(0);
+  } //end drawEnemies
 } //end battlegrid class

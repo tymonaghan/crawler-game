@@ -10,7 +10,8 @@ void playGame(int state) {
     break;
 
   case EGameState.battle:
-    battle();
+    //battleMenu.resetMenuLevel();
+    battleDirector();
     break;
 
   case EGameState.loadout:
@@ -20,9 +21,14 @@ void playGame(int state) {
   case EGameState.dead:
     deadScreen();
     break;
-    
+
   case EGameState.dialog:
-  dialog0.playScene();
+    dialog0.playScene();
+    break;
+
+  case EGameState.playerAttack:
+    int accy = playerCharacter.getAccuracy();
+    playerCharacter.doAttack(accy);
   } // end switch
 } //end playGame
 
@@ -49,18 +55,6 @@ void travel() {
   movingBackground(zone);
   playerCharacter.moveCharacter(frames);
   playerCharacter.statusBar(playerInventory);
-}
-
-void battle() {
-  background(colorScheme[0]);
-  battleMenu.display();
-  battleMenu.drawCursor();
-  battleMenu.interact();
-  talkTest.quickDisplay("kill");
-  talkTest.clickCheckTwo(5);
-  playerCharacter.statusBar(playerInventory);
-  battleGrid.spawnEncounter();//this is looping , need to get it to just run once per encounter.
-  playerCharacter.characterInCombat(status);
 }
 
 void deadScreen() {

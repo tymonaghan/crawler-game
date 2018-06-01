@@ -30,6 +30,8 @@ class Loadout {
       } // end if for loadoutpopup mouse detection
     } //end for loop creating the bounds for the buttons
     playerCharacter.loadoutScreen(playerInventory);
+    playButton.display(int(.15*width), int(.075 *height), 5, 4, "Deploy");
+    playButton.clickCheck(mouseX,mouseY,1);
   } //end display
 
   void loadoutPopup(int i_) { // a popup with info about each item type
