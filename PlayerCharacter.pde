@@ -7,6 +7,7 @@ class PlayerCharacter {
 
   PlayerCharacter(int hp_) {
     hitPoints = hp_;
+    accuracy = -100;
   } //end playerCharacter constructor
 
   int getLightArmsSkill() { //should eventually make an array of skill levels
@@ -40,7 +41,8 @@ class PlayerCharacter {
     }
   } //end playerAction
 
-  void characterInCombat(int status) {
+  void drawInCombat() {
+    int status = playerCharacter.getStatus();
     stroke(colorScheme[4]);
     strokeWeight(2);
     fill(colorScheme[3]);
@@ -123,7 +125,7 @@ class PlayerCharacter {
       //rect(barX+padding, barY+padding*2+barHeight/2+20*ii, .02*width, .02*width); //little yellow circles
       imageMode(CORNER);
       noTint();
-      if (playerInventory[ii] == 0) { //if quantity is 0, tint the icon red
+      if (playerInventory[ii] == 0 && ii >0) { //if quantity is 0, tint the icon red
         tint(255-playerInventory[ii]*5, 0, 0);
       } //end if redtint
       image(inventoryIcons[ii], barX+padding, barY+padding*2+barHeight/2+20*ii, .02*width, .02*width); //inventory icons
@@ -151,6 +153,7 @@ class PlayerCharacter {
   void hurtPlayer(int hp_) {
     int hurt = hp_;
     this.hitPoints -= hurt;
+    text("goon hit you for "+hurt+" in damage", width/2, height/2);
   } //end hurtPlayer
 
   /* so far this is being handled by the loadout class
@@ -177,12 +180,13 @@ class PlayerCharacter {
 
   int doAttack(int accy_) { //feed accuracy offset to this - lower is better, 0 is perfect.
     int accuracyOffset = abs(accy_);
-    int damage = 0;
+    int damage = -5;
     int ticker = battleMenu.getTicker();
-    if (ticker == 0) { //if wrapper to try to stop double-calling this function --seems to work
+    if (ticker > 0) { //if wrapper to try to stop double-calling this function --seems to work
       if (playerInventory[6] < 1) {
         fill(colorScheme[2]);
         text("No ammo, cancelling attack", width/2, height/2);
+        delay(150);
         battleMenu.resetMenuLevel();
         return 0;
       } else {
@@ -191,8 +195,11 @@ class PlayerCharacter {
         text("HIT", width/2, height/2);
         playerCharacter.setStatus(1);
         goon.setHitPoints(-3, 0); //(damage, damagetype)
+        delay(100);
         sequence++;
+        advanceToNextTurn();
       }
+      battleMenu.resetTicker();
     } // end if wrapper
     return damage;
   } //end doAttack
@@ -205,6 +212,12 @@ class PlayerCharacter {
     return accuracy;
   } //end getAccuracy
 
+  void changeAccuracy(int change_) {
+    int x = change_;
+    int y = this.getAccuracy();
+    this.setAccuracy(y+x);
+  } //end changeaccuracy
+
   boolean checkDetected(int enemyVigilance_) {
     int playerStealthRoll = playerAttributes.get("stealth");
     int enemyVigilance = enemyVigilance_;
@@ -216,23 +229,23 @@ class PlayerCharacter {
   }
 
   void statusBarPopup(int location_) {
-    int index = location_;
-    String names[] = loadout.keyArray();
+    int index = location_; // int index is index location in playerInventory
+    String names[] = loadout.keyArray(); //names[] stringArray from loadout, which is the CATEGORY names.
     stroke(colorScheme[0]);
     fill(200);
     rectMode(CORNER);
     strokeWeight(3);
     textAlign(BOTTOM, LEFT);
     textMode(CORNER);
-    if (index < 4) {
-      rect(mouseX+20, mouseY+10, .3*width, .2*height);
+    if (index < 4) { //for the first four items, show popup with item name, inv slot, and description?
+      rect(mouseX+20, mouseY+10, .3*width, .2*height); //draw popup rectangle
       fill(0);
-      if (playerInventory[index] == 0) {
-        text("[empty]", mouseX+30, mouseY+30);
-      } else {
-        text(weaponList.get(playerInventory[index]+index*10), mouseX+30, mouseY+30);
-      }
-        text("\nweapon type: "+names[index], mouseX+30, mouseY+30);
+      //if (playerInventory[index] == 0) { //if the inventory slot is at 0...
+      //  text("[empty]", mouseX+30, mouseY+30);  // say it;s EMPTY
+      //} else {
+      text(weaponList.get(playerInventory[index]+index*10), mouseX+30, mouseY+30);
+      //}
+      text("\nweapon type: "+names[index], mouseX+30, mouseY+30);
     } else {
       rect(mouseX+20, mouseY+10, .2*width, .12*height);
       fill(0);
@@ -242,17 +255,21 @@ class PlayerCharacter {
   } //end statusBarPopup
 
   void lifeBarPopup() {
-    String labels[] = playerAttributes.keyArray();
+    String labels[] = playerAttributes.keyArray(); //labels gets the name of each attribute
+    //playerLevels[] stores the attribute levels, keyed to the names in labels[]
     stroke(colorScheme[0]);
     fill(200);
     rectMode(CORNER);
     strokeWeight(3);
-    textAlign(BOTTOM, LEFT);
+    textAlign(LEFT, TOP);
     textMode(CORNER);
-    rect(mouseX+20, mouseY, .4*width, .4*height);
+    rect(mouseX+20, mouseY, .4*width, .5*height);
+
     fill(0);
+    textFont(menuFont);
     for (int i = 0; i < playerAttributes.size(); i++) {
-      text(labels[i]+": "+playerAttributes.get(labels[i]), mouseX+30, mouseY +30*(i+1));
+      text(labels[i]+": "+playerLevels[i], mouseX+25, mouseY +30*i);
     } //end for loop
+    text("effects: "+playerEffects, mouseX+25, mouseY + 30 * 8);
   } //end lifeBarPopup()
 }

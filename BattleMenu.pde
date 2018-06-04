@@ -8,28 +8,28 @@ class BattleMenu {
     //RIP implementation of zones to determine colors. maybe in another spot. 
     //bgColor = getBgColor(zone);
     //textColor = getTextColor(zone);
-    menuX = 0.1 * width;
-    menuY = 0.7 * height;
-    menuWidth = 0.4 * width;
-    menuHeight = 0.2 * height;
+    menuX = .1*width;
+    menuY = .7*height;
+    menuWidth = int(0.4 * width);
+    menuHeight = int(0.2 * height);
     cursorX = 0;
     cursorY = 0;
     cursorLocation=0;
     ticker = 0;
     menuLevel = 0;
-    accuracy = -100;      //change this to a variable based on playerCharacter level at some point
+    //accuracy = -100;      //change this to a variable based on playerCharacter level at some point
   } // end battlemenu constructor
-  
-  int getTicker(){
+
+  int getTicker() {
     return ticker;
   } 
-  
-  void setTicker(int ticksetter_){
-    ticker = ticksetter_;
+
+  void resetTicker() {
+    ticker = 0;
   } //end setTicker
 
   void resetMenuLevel() { //call this at the beginning of each battle to reset menuLevel
-    menuLevel= 0;
+    menuLevel = 0;
   }
 
   void incMenuLevel() { //call this to change the menuLevel
@@ -40,8 +40,7 @@ class BattleMenu {
     return menuLevel;
   } 
 
-  void display(boolean playersTurn_) {
-    
+  void displayMainBattleMenu() {
     bgColor = colorScheme[3];
     textColor = colorScheme[4];
     textFont(battleMenuFont);
@@ -51,22 +50,17 @@ class BattleMenu {
     rectMode(CORNER);
     rect(menuX, menuY, menuWidth, menuHeight);
     fill(textColor);
-    textAlign(LEFT, CENTER);
-
-    text("Attack", menuX+30, menuY+20);
-    text("Support", menuX+30, menuY+50);
-    text("Cover", menuX + 30, menuY + 80);
-
-    text("Advance", menuX + 200, menuY + 20);
-    text("Flank", menuX + 200, menuY + 50);
-    text("Retreat", menuX +200, menuY + 80);
-    //this.drawCursor();
+    textMode(CORNER);
+    textAlign(LEFT, CENTER);  
+    for (int x = 0; x <2; x++) {
+      for (int y = 0; y<3; y++) {
+        text(mainBattleMenu[x][y], xCoordinate[x], yCoordinate[y]);
+      }//end for loop-y
+    } // end for loop -x
     ticker++;
   } // end display
 
   int drawCursor() { //draw cursor and respond with where it's pointing -- this is pretty hardcoded to the battleMenu right now - might be better to make a separate cursor for subMenus
-    //cursorX = 0;
-    //cursorY = 0;
     if (keyPressed == true && key == CODED && ticker > 10) {
       if (keyCode == UP) {
         if (cursorY <= 0) {
@@ -91,7 +85,7 @@ class BattleMenu {
       } // end left/right
     } //end if keypressed & coded
     if (battleMenu.getMenuLevel() == 0 ) {
-
+      //drawTriangleCursor(menuX,menuY,0);
       noStroke();
       fill(colorScheme[4]);
       triangle(menuX+25+cursorX*170, menuY+20+(cursorY*30), menuX+20+cursorX*170, menuY+25+(cursorY*30), menuX+20+cursorX*170, menuY+15+(cursorY*30));
@@ -139,15 +133,12 @@ class BattleMenu {
     tier = tier_;
     cursorX = 0;
     cursorY = 0;
-    int xOffset = tier*75;
-    int yOffset = tier *15;
+
     if (battleMenu.getMenuLevel() == this.tier) {
-      noStroke();
-      fill(colorScheme[4]);
-      triangle(menuX+xOffset+30, menuY + yOffset + 20, menuX+xOffset+25, menuY + yOffset+ 25, menuX+xOffset+25, menuY + yOffset + 15);
-      if (items >4) { //if more than 4 items, need left-right support
-        //add left-right support here
-      } // end if less than 4 items
+      drawTriangleCursor(menuX, menuY, tier);
+
+      //add left-right support here
+      //} // end if less than 4 items
     } // end if battlemenu is current tier (to select active window and display cursor therein
     if (keyPressed == true && key == ' ' && ticker >10) {
       battleMenu.incMenuLevel();
@@ -190,20 +181,28 @@ class BattleMenu {
 
   void aimGame(int dmg_) {
     stroke(colorScheme[2]);
-    fill(abs(accuracy*2.5), -abs(accuracy*2), 70, 150);
+    int accy = playerCharacter.getAccuracy();
+    fill(abs(accy*2.5), -abs(accy*2), 70, 150);
     strokeWeight(3);
     ellipseMode(CENTER);
-    ellipse(.45*width, battleGrid.getGridRowCenter(1), accuracy*2.5, accuracy*2.5); //initial size of circle, may want to play with multipliers for acc'y based on skill or enemy or cover
-    if ((mousePressed == true && ticker > 10) || (accuracy > 99)) {  //complete attack if mousepressed OR accuracy-meter runs out.
-      //playerCharacter.setStatus(1);
-      //playerCharacter.setAccuracy(accuracy);
+    ellipse(.45*width, battleGrid.getGridRowCenter(1), accy*2.5, accy*2.5); //initial size of circle, may want to play with multipliers for acc'y based on skill or enemy or cover
+    if ((mousePressed == true && ticker > 10) || (accy > 99)) {  //complete attack if mousepressed OR accuracy-meter runs out.
       battleMenu.incMenuLevel();
-      //playerCharacter.doAttack(accuracy);
-      //battleMenu.resetMenuLevel();
       ticker = 0;
       return;
     } else {
-      accuracy+=3;
+      playerCharacter.changeAccuracy(3);
     } //end if triggers for completing the attack
   } //end aimGame
+
+  void drawTriangleCursor(float xpos_, float ypos_, int tier_) { //feed this menuX, menuY, and menuTier
+    int x = int(xpos_);
+    int tier = tier_;
+    int y = int(ypos_);
+    int xOffset = int(tier*75);
+    int yOffset = int(tier *15);
+    noStroke();
+    fill(colorScheme[4]);
+    triangle(x+xOffset+30, y + yOffset + 20, x+xOffset+25, y + yOffset+ 25, x+xOffset+25, y + yOffset + 15);
+  } //end draw triangle cursor
 } //end BattleMenu class

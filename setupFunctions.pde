@@ -4,8 +4,8 @@ void setupFunctions() {
   initializeImages();
   frameRate(25);
 
-
-  battleMenuFont = createFont("c:/WINDOWS/FONTS/OCRAEXT.TTF", 18);
+ 
+  battleMenuFont = createFont("c:/WINDOWS/FONTS/OCRAEXT.TTF", 18); //load fonts, use the processing tool to include these in sketch itself
   menuFont = createFont("c:/WINDOWS/FONTS/BOOKOS.TTF", 22);
 } //end setupFunctions
 
@@ -39,26 +39,37 @@ void printInventory() { //prints inventory to console until I code this into the
 void initializeListsAndArrays() {
 
   loadout = new IntDict();
-  loadout.set("knife", 0);
-  loadout.set("pistol", 1);
-  loadout.set("carbine", 2);
-  loadout.set("heavy", 3);
+  loadout.set("melee", 0);
+  loadout.set("small weap.", 1);
+  loadout.set("medium weap.", 2);
+  loadout.set("heavy weap.", 3);
   loadout.set("flash-grenade", 4);
   loadout.set("frag-grenade", 5);
   loadout.set("light-ammo", 6);
   loadout.set("heavy-ammo", 7);
-  
+
   weaponDamage = new IntDict();
+
+  weaponDamage.set("none", 0);
+
+  weaponDamage.set("fists", 1);
+  weaponDamage.set("ball pt pen", 2);
+
   weaponDamage.set("pellet gun", 4);
-  
+
   playerAttributes = new IntDict();
-  playerAttributes.set ("stealth",0);
-  playerAttributes.set ("small arms",1);
-  playerAttributes.set ("heavy ordnance",2);
-  playerAttributes.set( "speed",3);
-  playerAttributes.set("toughness",4);
-  playerAttributes.set ("electronics",5);
-  playerAttributes.set("persuasion",6);
+  playerAttributes.set ("stealth", 0);
+  playerAttributes.set ("small arms", 1);
+  playerAttributes.set ("heavy ordnance", 2);
+  playerAttributes.set( "speed", 3);
+  playerAttributes.set("toughness", 4);
+  playerAttributes.set ("electronics", 5);
+  playerAttributes.set("persuasion", 6);
+  playerAttributes.set("instincts", 7);
+
+  for (int i = 0; i <playerLevels.length-1; i++) {
+    playerLevels[i] = 0;
+  } //end assign all 0s to player level
 
   itemNotes = new StringList();
   itemNotes.set(0, "unlimited use");
@@ -73,8 +84,8 @@ void initializeListsAndArrays() {
   commandList = new StringList();
   commandList.set(0, "attack");
   commandList.set(1, "action2");
-  
-  
+
+
   weaponList = new StringList();
   weaponList.set(0, "fists");
   weaponList.set(1, "ball pt pen");
@@ -86,8 +97,8 @@ void initializeListsAndArrays() {
   weaponList.set(7, "aluminum bat");
   weaponList.set(8, "claymore");
   weaponList.set(9, "katana");
-  
-  weaponList.set(10, "pellet gun");
+
+  weaponList.set(10, "none");
   weaponList.set(11, "sat. night spec.");
   weaponList.set(12, "luger");
   weaponList.set(13, "9mm semi");
@@ -97,9 +108,9 @@ void initializeListsAndArrays() {
   weaponList.set(17, "magnum revolver");
   weaponList.set(18, "flare gun");
   weaponList.set(19, "sawed shotgun");
-  
-  weaponList.set(20, "klobb");
-  weaponList.set(21, "mac 11");
+
+  weaponList.set(20, "none");
+  weaponList.set(21, "klobb");
   weaponList.set(22, "mp5");
   weaponList.set(23, "aks-74u");
   weaponList.set(24, "m1");
@@ -108,8 +119,8 @@ void initializeListsAndArrays() {
   weaponList.set(27, "g36c");
   weaponList.set(28, "scar-h");
   weaponList.set(29, "SUROS regime");
-  
-  weaponList.set(30, "aerosol torch");
+
+  weaponList.set(30, "none");
   weaponList.set(31, "javelin");
   weaponList.set(32, "steel brimmed bowler");
   weaponList.set(33, "jar of ball bearings");
@@ -130,14 +141,22 @@ void initializeListsAndArrays() {
   itemPrices.set(5, 50);
   itemPrices.set(6, 10);
   itemPrices.set(7, 35);
-  
-  turnOrder = new IntList();
 
-  for (int i = 0; i < playerInventory.length; i++) {
+  turnOrder = new IntList();  //holder for turn order
+  for (int i = 0; i < 50; i++) {
+    turnOrder.set(i, int(random(2)));
+  } // end put together fake turnlist
+
+  textsList = new StringList();  //random texts for menus, etc
+  textsList.set(0, "enemy's turn");
+  textsList.set(1, "your turn");
+
+
+  for (int i = 0; i < playerInventory.length; i++) {  //load inventory icon images
     inventoryIcons[i] = loadImage("inv-icon"+i+".png");
   } //end for loop to initialize inventory images
 
-  int whilst = 0;
+  int whilst = 0;      //the little images of the armed player-character for loadout screen
   while (whilst < 4) {
     imageAssets[whilst] = loadImage("armed"+whilst+".png");
     whilst++;
@@ -150,13 +169,36 @@ void initializeListsAndArrays() {
   colorScheme[3] = color(70, 70, 70); //dark gray  
   colorScheme[4] = color(235); //white(ish)
   colorScheme[5] = color(#75CB58); // pale green
+  colorScheme[6] = color(#C4C4C4); // light gray
 
   //init playerInventory array
   for (int i = 0; i < playerInventory.length; i++) {
-    playerInventory[i] = 0;
+    playerInventory[i] = 1; //3 of all weapons
+    if (i > 5) {
+      playerInventory[i] = 50;
+    } // end 50 for ammo
   } // end for-loop initializing playerInventory
-} //end initializeListsAndArrays
 
+  mainBattleMenu[0][0] = "attack";
+  mainBattleMenu[0][1] = "support";
+  mainBattleMenu[0][2] = "cover";
+  mainBattleMenu[1][0] = "Advance";
+  mainBattleMenu[1][1] = "flank";
+  mainBattleMenu[1][2] = "retreat";
+
+  attackSubMenu[0][0] = "melee";
+  attackSubMenu[0][1] = "small weap.";
+  attackSubMenu[0][2] = "medium weap.";
+
+  xCoordinate[0] = 120;
+  xCoordinate[1] = 230;
+  xCoordinate[2] = 250;
+  xCoordinate[3] = 360;
+
+  yCoordinate[0] = 430;
+  yCoordinate[1] = 470;
+  yCoordinate[2] = 510;
+} //end initializeListsAndArrays
 
 
 void initializeObjects() {
@@ -169,7 +211,7 @@ void initializeObjects() {
   battleGrid = new BattleGrid(zone, int(random(5)), int(random(5)));
   playerCharacter = new PlayerCharacter(100); //initialize player character (hit-points)
   dialog0 = new Dialog(0);
-  goon = new Enemy(10,10,10);
+  goon = new Enemy(10, 10, 10);
 } //end initializeObjects
 
 void initializeImages() {
