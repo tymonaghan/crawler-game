@@ -79,10 +79,10 @@ void battle() { //stuff that should ALWAYS be happening in battle.
 }
 
 void playersTurn() {
-  battleMenu.displayMainBattleMenu();   //display the main tier-0 menu always
-  battleMenu.interact();
+  battleMenu.displayBattleMenu();   //display the main tier-0 menu always
+  //battleMenu.interact();
   int menuLevel = battleMenu.getMenuLevel();
-
+/*
   if (menuLevel > 0) {
     attackMenu.displaySubMenu(1, 1, false);
   }
@@ -104,6 +104,7 @@ void playersTurn() {
     goon.setHitPoints(damage, 0);
     advanceToNextTurn();
   }//end ifs
+  */
 
   //for-loop to bump the turn order down
 }

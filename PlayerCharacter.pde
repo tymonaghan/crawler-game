@@ -3,11 +3,13 @@ class PlayerCharacter {
   int [] playerInventory;
   int status = 0;
   int accuracy;
+  int intelPoints;
   // boolean walkSwitcher = true;
 
   PlayerCharacter(int hp_) {
     hitPoints = hp_;
     accuracy = -100;
+    intelPoints = 100;
   } //end playerCharacter constructor
 
   int getLightArmsSkill() { //should eventually make an array of skill levels
@@ -21,6 +23,14 @@ class PlayerCharacter {
   void setStatus(int num_) {
     status = num_;
   } //end setStatus
+
+  void modIntelPoints(int intelModBy_) {
+    intelPoints = intelPoints + intelModBy_;
+  } //modify intel points
+
+  int getIntelPoints () {
+    return intelPoints;
+  } //end get intel points
 
   void playerAction(int i) { //  0 attack, 1 advance, 2 support, 3 flank, 4 cover, 5 retreat
     if (i==0) { //code for attack
@@ -115,7 +125,7 @@ class PlayerCharacter {
     //print tally of intelPoints:
     textAlign(CENTER, BOTTOM);
     textSize(12);
-    fill(0);
+    fill(6);
     text("Intel: "+intelPoints, barX, barY);
     //println(loadout.keyArray());
     //other shit for status bar -- inventory icons:
@@ -154,6 +164,7 @@ class PlayerCharacter {
     int hurt = hp_;
     this.hitPoints -= hurt;
     text("goon hit you for "+hurt+" in damage", width/2, height/2);
+    delay(200);
   } //end hurtPlayer
 
   /* so far this is being handled by the loadout class
@@ -197,7 +208,7 @@ class PlayerCharacter {
         goon.setHitPoints(-3, 0); //(damage, damagetype)
         delay(100);
         sequence++;
-        advanceToNextTurn();
+        //advanceToNextTurn();
       }
       battleMenu.resetTicker();
     } // end if wrapper

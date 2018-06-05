@@ -8,6 +8,7 @@ class Loadout {
   }
 
   void display() { //draw the main loadout window
+    //int intelPts = playerCharacter.getIntelPoints;
     background(255);
     fill(colorScheme[3]);
     stroke(colorScheme[1]);
@@ -15,7 +16,7 @@ class Loadout {
     rectMode(CORNER);
     rect(0.1*width, 0.1*height, 0.8*width, 0.8*height);
     fill(colorScheme[1]);
-    text("Intel Points: "+intelPoints, width/2, 0.2*height);
+    text("Intel Points: "+playerCharacter.intelPoints, width/2, 0.2*height);
     tint(250, 190, 190);
     for (int i = 0; i < playerInventory.length; i++) { //draw the first set of icons in one row
       imageMode(CORNER);
@@ -31,28 +32,37 @@ class Loadout {
     } //end for loop creating the bounds for the buttons
     playerCharacter.loadoutScreen(playerInventory);
     playButton.display(int(.15*width), int(.075 *height), 5, 4, "Deploy");
-    playButton.clickCheck(mouseX,mouseY,1);
+    playButton.clickCheck(mouseX, mouseY, 1);
   } //end display
 
   void loadoutPopup(int i_) { // a popup with info about each item type
-    itemNumber = i_;
+    itemNumber = i_; //this only shows when hovered over an item, so don't need to handle that here. just clicks.
     String [] labels = loadout.keyArray(); // create "labels" array with inventory slot names
     stroke(0);
     fill(200);
     strokeWeight(2);
     rectMode(CORNER);
     rect(mouseX, mouseY, 250, 100);
+    pushStyle();
     fill(0);
     textAlign(LEFT, TOP);
     textFont(battleMenuFont);
-    text("click to buy "+labels[itemNumber]+"\nitem cost: "+itemPrices.get(itemNumber)+"\n"+itemNotes.get(itemNumber), mouseX+5, mouseY+5);
+    textSize(14);
+
+    if (itemNumber <4 && playerInventory[itemNumber] != 0) { //if you don't have any, offer to buy
+      text("click to upgrade "+labels[itemNumber]+"\nfrom: "+weaponList.get(itemNumber*10+playerInventory[itemNumber])+"\nto: "+weaponList.get(itemNumber*10+playerInventory[itemNumber]+1)+"\nitem cost: "+itemPrices.get(itemNumber)+"\n"+itemNotes.get(itemNumber), mouseX+5, mouseY+5);
+    } else {  
+      text(labels[itemNumber]+" [none]\nclick to buy "+weaponList.get(playerInventory[itemNumber]+(itemNumber*10)+1)+"\nitem cost: "+itemPrices.get(itemNumber)+"\n"+itemNotes.get(itemNumber), mouseX+5, mouseY+5);
+    }
+
     if (mousePressed == true && ticker > 9) { // if you press the mouse, add item to inventory
-      if (intelPoints >= itemPrices.get(itemNumber)) { //check if the player can afford the item
-        playerInventory[itemNumber] = playerInventory[itemNumber]+1;
-        intelPoints -=itemPrices.get(itemNumber); //deduct cost of item
+      if (playerCharacter.intelPoints >= itemPrices.get(itemNumber)) { //check if the player can afford the item
+        playerInventory[itemNumber] = playerInventory[itemNumber]+1;  // add 1 to the playerInventory array at the proper index (add inventory)
+        playerCharacter.modIntelPoints(-itemPrices.get(itemNumber)); //deduct cost of item via playerChar.modIntelPoints
         ticker = 0; //reset ticker to prevent multi-clicks
       } // end if you can afford it (right now there's no else if you can't afford it but this should prevent negative numbers
     }  //end if mousePressed
+    popStyle();
     ticker++;
   } //end loadoutPopup
 

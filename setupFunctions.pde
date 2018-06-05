@@ -4,7 +4,7 @@ void setupFunctions() {
   initializeImages();
   frameRate(25);
 
- 
+
   battleMenuFont = createFont("c:/WINDOWS/FONTS/OCRAEXT.TTF", 18); //load fonts, use the processing tool to include these in sketch itself
   menuFont = createFont("c:/WINDOWS/FONTS/BOOKOS.TTF", 22);
 } //end setupFunctions
@@ -28,9 +28,9 @@ color getTextColor(int zone) { //get text color based on current zone
 
 void printInventory() { //prints inventory to console until I code this into the game itself
   String [] labels = loadout.keyArray();
-  println("\n\n\nyour inventory:");
+  //println("\n\n\nyour inventory:");
   for (int i = 0; i < playerInventory.length; i++) {
-    println(labels[i]+": "+playerInventory[i]);
+    //println(labels[i]+": "+playerInventory[i]);
   } // end for loop for printing inventory
 } //end printInventory
 
@@ -130,10 +130,15 @@ void initializeListsAndArrays() {
   weaponList.set(37, "jar of spiders");
   weaponList.set(38, "curtain call");
   weaponList.set(39, "railgun");
-
+  
+  for (int i = 0; i <weapons.length; i++){
+    int dmg = i; //for now damage just equals item number
+    int cat = i/10; //category goes by tens (I hope)
+    weapons[i] = new Weapon(dmg, 0, cat, weaponList.get(i), "no desc. yet");//dmg, dmgtype, category, name, note
+  } //end loop to create weapons
 
   itemPrices = new IntList();
-  itemPrices.set(0, 0);
+  itemPrices.set(0, 25);
   itemPrices.set(1, 40);
   itemPrices.set(2, 70);
   itemPrices.set(3, 140);
@@ -171,14 +176,22 @@ void initializeListsAndArrays() {
   colorScheme[5] = color(#75CB58); // pale green
   colorScheme[6] = color(#C4C4C4); // light gray
 
-  //init playerInventory array
-  for (int i = 0; i < playerInventory.length; i++) {
-    playerInventory[i] = 1; //3 of all weapons
+  //init playerInventory array -----------------------------------------------Set inventory amounts
+  playerInventory[0] = 1;
+  for (int i = 1; i < playerInventory.length; i++) {
+    playerInventory[i] = 0; //starting level/qty for WEAPONS
     if (i > 5) {
-      playerInventory[i] = 50;
+      playerInventory[i] = 50; //starting QTY for AMMO
     } // end 50 for ammo
   } // end for-loop initializing playerInventory
 
+  menuArrays = new ArrayList();
+  menuArrays.add(mainBattleMenu); //0
+  menuArrays.add(attackSubMenu); //1
+  menuArrays.add(supportSubMenu); //2
+  menuArrays.add(null);
+  
+  //this is MENU 0
   mainBattleMenu[0][0] = "attack";
   mainBattleMenu[0][1] = "support";
   mainBattleMenu[0][2] = "cover";
@@ -186,31 +199,54 @@ void initializeListsAndArrays() {
   mainBattleMenu[1][1] = "flank";
   mainBattleMenu[1][2] = "retreat";
 
+  //this is MENU 1
   attackSubMenu[0][0] = "melee";
   attackSubMenu[0][1] = "small weap.";
   attackSubMenu[0][2] = "medium weap.";
+  attackSubMenu[1][0] = "";
+  attackSubMenu[1][1] = "";
+  attackSubMenu[1][2] = "";
+  
+  //this is MENU 2
+  supportSubMenu[0][0] = "UAV drone";
+  supportSubMenu[0][1] = "grid overload";
+  supportSubMenu[0][2] = "sniper support";
+  supportSubMenu[1][0] = "threat analysis";
+  supportSubMenu[1][1] = "airstrike";
+  supportSubMenu[1][2] = "helicopter on station";
 
   xCoordinate[0] = 120;
-  xCoordinate[1] = 230;
-  xCoordinate[2] = 250;
-  xCoordinate[3] = 360;
+  xCoordinate[1] = 250;
+  xCoordinate[2] = 135;
+  xCoordinate[3] = 265;
+  xCoordinate[4] = 150;
 
   yCoordinate[0] = 430;
   yCoordinate[1] = 470;
   yCoordinate[2] = 510;
+  yCoordinate[3] = 445;
+  yCoordinate[4] = 485;
+  yCoordinate[5] = 525;
 } //end initializeListsAndArrays
 
 
 void initializeObjects() {
-  playButton = new Button(.4*width, 0.75*height);
-  loadoutButton = new Button(.6*width, 0.75*height);
+  playButton = new Button(.4*width, 0.85*height);
+  loadoutButton = new Button(.6*width, 0.85*height);
   talkTest = new Button(400, height/4);
+  beginEncounter = new Button(width-70, 50);
+
   gunshop = new Loadout();
+
   battleMenu = new BattleMenu();
   attackMenu = new BattleMenu();
+
   battleGrid = new BattleGrid(zone, int(random(5)), int(random(5)));
+
   playerCharacter = new PlayerCharacter(100); //initialize player character (hit-points)
-  dialog0 = new Dialog(0);
+
+  dialog = new Dialog();
+
   goon = new Enemy(10, 10, 10);
 } //end initializeObjects
 
@@ -222,4 +258,5 @@ void initializeImages() {
   firingCharacter = loadImage("sprite1-4.png");
   imageAssets[4] = loadImage("ctu-icon.PNG");
   imageAssets[5] = loadImage("robit.png");
+  imageAssets[6] = loadImage("skyline.png");
 } //end initializeImages

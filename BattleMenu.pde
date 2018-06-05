@@ -1,6 +1,6 @@
 class BattleMenu {
   color bgColor, textColor;
-  int xPos, yPos, cursorX, cursorY, ticker, cursorLocation, tier, rows, menuLevel, items, accuracy;
+  int xPos, yPos, xLoc, yLoc, xL, yL, cursorX, cursorY, ticker, cursorLocation, tier, rows, menuLevel, items, accuracy, activeMenu;
   float menuX, menuY, menuWidth, menuHeight;
   boolean alert;
 
@@ -17,140 +17,169 @@ class BattleMenu {
     cursorLocation=0;
     ticker = 0;
     menuLevel = 0;
+    xLoc = 0;
+    yLoc = 0;
+    xL=0;
+    yL=0;
+    activeMenu = 0;
     //accuracy = -100;      //change this to a variable based on playerCharacter level at some point
   } // end battlemenu constructor
 
   int getTicker() {
     return ticker;
-  } 
+  }  //end getTicker
 
   void resetTicker() {
     ticker = 0;
   } //end setTicker
 
-  void resetMenuLevel() { //call this at the beginning of each battle to reset menuLevel
+  void resetMenuLevel() { //call this at the beginning of each battle and after each action to reset menuLevel
     menuLevel = 0;
+    yLoc=0;
+    xLoc = 0;
   }
 
   void incMenuLevel() { //call this to change the menuLevel
     menuLevel++;
+    yLoc=0;
+    xLoc = 0;
   }
 
   int getMenuLevel() {
     return menuLevel;
   } 
 
-  void displayMainBattleMenu() {
-    bgColor = colorScheme[3];
+  int getxLoc() {
+    return xLoc;
+  }
+
+  void incxLoc() {
+    xLoc++;
+  }
+
+  void resetxLoc() {
+    xLoc=0;
+  }
+
+  int getyLoc() {
+    return yLoc;
+  }
+
+  void incyLoc() {
+    yLoc++;
+  }
+
+  void resetyLoc() {
+    yLoc=0;
+  }
+
+  void resetCursor() {
+    xLoc=0;
+    yLoc=0;
+  } //end resetCursor
+
+  int getActiveMenu() {
+    return activeMenu;
+  } 
+
+  void setActiveMenu(int set_) {
+    activeMenu = set_;
+  } 
+
+  void displayBattleMenu() {
+    tier = getActiveMenu();
+    bgColor = colorScheme[3]; //static colors
     textColor = colorScheme[4];
+    String menuItems[][] = new String[2][3];
+    arrayCopy(menuArrays.get(tier), menuItems);
+
     textFont(battleMenuFont);
     stroke(textColor);
     fill(bgColor);
     strokeWeight(5);
     rectMode(CORNER);
-    rect(menuX, menuY, menuWidth, menuHeight);
+    for (int i = 0; i <tier+1; i++) {
+      rect(xCoordinate[i*2]-25, yCoordinate[i*3]-15, menuWidth, menuHeight); //draw the menu according to its tier
+    } //end for loop to draw under-boxes
+
     fill(textColor);
     textMode(CORNER);
-    textAlign(LEFT, CENTER);  
-    for (int x = 0; x <2; x++) {
-      for (int y = 0; y<3; y++) {
-        text(mainBattleMenu[x][y], xCoordinate[x], yCoordinate[y]);
+    textAlign(LEFT, TOP);  
+    for (int x = 0; x <2; x++) { // for x0 and x1
+      for (int y = 0; y<3; y++) { //for y0, y1, and y2
+        text(menuItems[x][y], xCoordinate[x+2*tier], yCoordinate[y+3*tier]); //take texts from 2d array to populate menu, place according to xcoordinate and ycoordinate arrays!
       }//end for loop-y
     } // end for loop -x
+
+    int selection = battleMenuCursor(tier);
+    if (keyPressed == true && key == ' ' && ticker >10) {
+      if (tier==0) {
+        setActiveMenu(1);  //if you're on level 0, just go to level 1
+        resetCursor();
+      } else { //but if you're already on level 1
+        //go to attack or support or whatever confirm
+
+        confirmDialog(getActiveMenu(), selection);
+      }
+    } // end if keyPressed
     ticker++;
   } // end display
 
-  int drawCursor() { //draw cursor and respond with where it's pointing -- this is pretty hardcoded to the battleMenu right now - might be better to make a separate cursor for subMenus
-    if (keyPressed == true && key == CODED && ticker > 10) {
-      if (keyCode == UP) {
-        if (cursorY <= 0) {
-          cursorY = 3;
-        } 
-        cursorY--;
-        ticker = 0;
-      } else if (keyCode == DOWN) {
-        if (cursorY >= 2) {
-          cursorY=-1;
-        }
-        cursorY++;
-        ticker = 0;
-      } else if (keyCode == RIGHT || keyCode == LEFT) {
-        if (cursorX == 0) {
-          cursorX++;
-          ticker = 0;
-        } else {
-          cursorX=0;
-          ticker = 0;
-        }
-      } // end left/right
-    } //end if keypressed & coded
-    if (battleMenu.getMenuLevel() == 0 ) {
-      //drawTriangleCursor(menuX,menuY,0);
-      noStroke();
-      fill(colorScheme[4]);
-      triangle(menuX+25+cursorX*170, menuY+20+(cursorY*30), menuX+20+cursorX*170, menuY+25+(cursorY*30), menuX+20+cursorX*170, menuY+15+(cursorY*30));
-      return cursorY * 2 + cursorX; // 0 attack, 1 advance, 2 support, 3 flank, 4 cover, 5 retreat
-    } else {// end if menuLevel ==0
-      return 0;
-    }  //end else that returns 0 as fallback
-  } // end draw cursor
-
-  int interact() {
-    cursorLocation = this.drawCursor();
-    if (keyPressed == true && key == ' ' && ticker >10) {
-      battleMenu.incMenuLevel();
-      ticker = 0;
-    } // end if space is pressed
-    return cursorLocation;
-  } // end interact
-
-  void displaySubMenu(int tier_, int items_, boolean alert_) {
+  int battleMenuCursor(int tier_) {
     tier = tier_;
-    rows = int(items_/3)+1;
-    alert = alert_;
-    items = items_;
-    bgColor = colorScheme[3];
-    textColor = colorScheme[4];
-    if (alert) { //if the action is "alert" it will make a red box around the rect
-      textColor = colorScheme[2];
-    } // end if alert 
-    stroke(textColor);
-    fill(bgColor);
-    strokeWeight(5);
-    rectMode(CORNER);
-    rect(menuX + tier*75, menuY + tier*15, menuWidth/rows, menuHeight);
-    fill(textColor);
-    textAlign(LEFT, CENTER);
-    text("Fire pistol (l. ammo)", menuX+tier*75+30, menuY + tier*15 +20);
-    ticker++;
-    if (battleMenu.getMenuLevel() == 1) {
-      attackMenu.drawSubCursor(items, tier);
-    } // end if menuLevel
-  } //end displaySubMenu
+    xLoc = getxLoc();
+    yLoc = getyLoc();
+    ticker = getTicker();
+    if (keyPressed == true&&ticker>5) {
+      if (key == CODED) {
+        if (keyCode == DOWN) {
+          if (yLoc<2) {
+            yLoc++;
+          } else {
+            yLoc=0;
+          } //end else
+        } // end if DOWN pressed
+        else if (keyCode == UP) {
+          if (yLoc==0) {
+            yLoc=2;
+          } else {
+            yLoc--;
+          } //end else
+        } // end if DOWN pressed
+        else if (keyCode == LEFT || keyCode == RIGHT) {
+          if (xLoc ==1) {
+            xLoc = 0;
+          } else {
+            xLoc=1;
+          }// end else
+        } // end if left or right key pressed
+        resetTicker();
+      }
+    }
+    drawTriangleCursor(xCoordinate[xLoc+2*tier], yCoordinate[yLoc+3*tier], tier);
+    return xLoc*3+yLoc;
+  }
 
-  int drawSubCursor(int itemsCount_, int tier_) {
-    items = itemsCount_;
-    tier = tier_;
-    cursorX = 0;
-    cursorY = 0;
 
-    if (battleMenu.getMenuLevel() == this.tier) {
-      drawTriangleCursor(menuX, menuY, tier);
+  void confirmDialog(int activeMenu_, int selection_) { 
+    //this whole block is just to read back the name of whatever i picked with the cursor
+    String menuItemsX[][] = new String[2][3];
+    arrayCopy(menuArrays.get(activeMenu_), menuItemsX);
+    if (selection_ <3) {
+      xL =0;
+    } else {
+      xL = 1;
+    }
+    if (selection_ ==0 || selection_ ==3) {
+      yL =0;
+    } else if (selection_ ==1 || selection_ ==4) {
+      yL = 1;
+    } else if (selection_ ==2 || selection_ == 6) {
+      yL = 2;
+    }
+    String actionToConfirm = menuItemsX[xL][yL];
 
-      //add left-right support here
-      //} // end if less than 4 items
-    } // end if battlemenu is current tier (to select active window and display cursor therein
-    if (keyPressed == true && key == ' ' && ticker >10) {
-      battleMenu.incMenuLevel();
-      ticker = 0;
-    } //end if spacebar is pressed
-    ticker ++;
-    return 0;
-  } //end drawSubCursor
-
-  int confirmAttack(int weaponID_) {
-    String weaponID = weaponList.get(10);
-    tier =4;
+    String weaponID = weaponList.get(10); //need to compare action chosen -- this is becoming a mess, weapons probably need to be their own classes
     fill(colorScheme[3]);
     stroke(colorScheme[4]); 
     if (playerCharacter.hitPoints <25) {
@@ -166,43 +195,18 @@ class BattleMenu {
     textSize(14);
     text("attack with "+weaponID+"\ndamage: "+dmg+"\npotential dmg: "+(dmg-2)+" - "+(dmg+1)+"\nclick mouse to attack\npress space to cancel", menuX+ tier*75+5, menuY + tier*15+5); 
     popStyle();
-    if (keyPressed == true && ticker >10) {
-      ticker = 0;
-      battleMenu.resetMenuLevel();
-      return 0;
-    } else if (mousePressed == true && ticker > 10) {
-      ticker = 0;
-      battleMenu.incMenuLevel();
-      return dmg;
-    } // end if mouse pressed do aiming minigame
-    ticker++;
-    return 0;
-  } // end confirmAttack
 
-  void aimGame(int dmg_) {
-    stroke(colorScheme[2]);
-    int accy = playerCharacter.getAccuracy();
-    fill(abs(accy*2.5), -abs(accy*2), 70, 150);
-    strokeWeight(3);
-    ellipseMode(CENTER);
-    ellipse(.45*width, battleGrid.getGridRowCenter(1), accy*2.5, accy*2.5); //initial size of circle, may want to play with multipliers for acc'y based on skill or enemy or cover
-    if ((mousePressed == true && ticker > 10) || (accy > 99)) {  //complete attack if mousepressed OR accuracy-meter runs out.
-      battleMenu.incMenuLevel();
-      ticker = 0;
-      return;
-    } else {
-      playerCharacter.changeAccuracy(3);
-    } //end if triggers for completing the attack
-  } //end aimGame
+
+    println(actionToConfirm);
+  }// end confirmDialog
+
 
   void drawTriangleCursor(float xpos_, float ypos_, int tier_) { //feed this menuX, menuY, and menuTier
     int x = int(xpos_);
     int tier = tier_;
     int y = int(ypos_);
-    int xOffset = int(tier*75);
-    int yOffset = int(tier *15);
     noStroke();
     fill(colorScheme[4]);
-    triangle(x+xOffset+30, y + yOffset + 20, x+xOffset+25, y + yOffset+ 25, x+xOffset+25, y + yOffset + 15);
+    triangle(x-5, y+10, x-10, y+15, x-10, y+5);
   } //end draw triangle cursor
-} //end BattleMenu class
+} //end BattleMenu Class

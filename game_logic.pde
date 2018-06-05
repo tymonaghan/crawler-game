@@ -1,4 +1,4 @@
-void playGame(int state) {
+void playGame() {
 
   switch (gameState) {
   case EGameState.mainMenu:
@@ -22,7 +22,11 @@ void playGame(int state) {
     break;
 
   case EGameState.dialog:
-    dialog0.playScene();
+    dialog.playConversation();
+    break;
+    
+    case EGameState.cutscene:
+    dialog.playCutscene();
     break;
 
   } // end switch
@@ -34,18 +38,22 @@ void mainMenu() {
   stroke(255);
   background(100);
   imageMode(CENTER);
+  image(imageAssets[6],width/2,height/2,width,height);
   image(imageAssets[4], width/2, height/2);
+  
   playButton.display(150, 50, 0, 1, "PLAY");
-  playButton.clickCheck(mouseX, mouseY, 1);
+  playButton.clickCheck(mouseX, mouseY, 5);
+  
   loadoutButton.display(150, 50, 0, 2, "Loadout");
   loadoutButton.clickCheck(mouseX, mouseY, 3);
+  
+  beginEncounter.display(100, 50, 0, 1, "Battle init");
+  beginEncounter.clickCheck(mouseX, mouseY, 2);
 }
 
 void travel() {
   background(255);
   fill(0);
-  Button beginEncounter;
-  beginEncounter = new Button(width-70, 50);
   beginEncounter.display(100, 50, 0, 1, "Battle init");
   beginEncounter.clickCheck(mouseX, mouseY, 2);
   movingBackground(zone);
@@ -54,8 +62,7 @@ void travel() {
 }
 
 void movingBackground(int zone) {
-  if (zone == 0) {
-    println(walkCounter);
+  //if (zone == 0) {
     stroke(0);
     fill(100);
     rectMode(CORNERS);
@@ -64,7 +71,7 @@ void movingBackground(int zone) {
     stroke(150, 150, 0);
     strokeWeight(16);
     line(width-frames, .7*height, width-frames+200, .7*height);
-  } // if zone 0
+  //} // if zone 0
 } //end movingBackground
 
 void deadScreen() {
