@@ -56,6 +56,8 @@ void initializeListsAndArrays() {
   weaponDamage.set("ball pt pen", 2);
 
   weaponDamage.set("pellet gun", 4);
+  
+  weaponDamage.set("jar of spiders",30);
 
   playerAttributes = new IntDict();
   playerAttributes.set ("stealth", 0);
@@ -84,6 +86,9 @@ void initializeListsAndArrays() {
   commandList = new StringList();
   commandList.set(0, "attack");
   commandList.set(1, "action2");
+  
+  enemyTypes = new StringList();
+  enemyTypes.set(0, "goon-bot");
 
 
   weaponList = new StringList();
@@ -132,7 +137,7 @@ void initializeListsAndArrays() {
   weaponList.set(39, "railgun");
   
   for (int i = 0; i <weapons.length; i++){
-    int dmg = i; //for now damage just equals item number
+    int dmg = i*3; //for now damage just equals item number
     int cat = i/10; //category goes by tens (I hope)
     weapons[i] = new Weapon(dmg, 0, cat, weaponList.get(i), "no desc. yet");//dmg, dmgtype, category, name, note
   } //end loop to create weapons
@@ -185,35 +190,37 @@ void initializeListsAndArrays() {
     } // end 50 for ammo
   } // end for-loop initializing playerInventory
 
-  menuArrays = new ArrayList();
-  menuArrays.add(mainBattleMenu); //0
-  menuArrays.add(attackSubMenu); //1
-  menuArrays.add(supportSubMenu); //2
-  menuArrays.add(null);
+  menuArrays = new ArrayList(100);
+  for (int i =0; i <100; i++){
+    menuArrays.add(null);
+  }
+  menuArrays.set(0, mainBattleMenuItems); //0
+  menuArrays.set(10, attackMenuItems); //1
+  menuArrays.set(20, supportMenuItems); //2
   
   //this is MENU 0
-  mainBattleMenu[0][0] = "attack";
-  mainBattleMenu[0][1] = "support";
-  mainBattleMenu[0][2] = "cover";
-  mainBattleMenu[1][0] = "Advance";
-  mainBattleMenu[1][1] = "flank";
-  mainBattleMenu[1][2] = "retreat";
+  mainBattleMenuItems[0][0] = "attack";
+  mainBattleMenuItems[0][1] = "support";
+  mainBattleMenuItems[0][2] = "cover";
+  mainBattleMenuItems[1][0] = "Advance";
+  mainBattleMenuItems[1][1] = "flank";
+  mainBattleMenuItems[1][2] = "retreat";
 
-  //this is MENU 1
-  attackSubMenu[0][0] = "melee";
-  attackSubMenu[0][1] = "small weap.";
-  attackSubMenu[0][2] = "medium weap.";
-  attackSubMenu[1][0] = "";
-  attackSubMenu[1][1] = "";
-  attackSubMenu[1][2] = "";
+  //this is MENU 10
+  attackMenuItems[0][0] = "melee";
+  attackMenuItems[0][1] = "small weap.";
+  attackMenuItems[0][2] = "medium weap.";
+  attackMenuItems[1][0] = "heavy weap.";
+  attackMenuItems[1][1] = "flash-grenade";
+  attackMenuItems[1][2] = "frag-grenade";
   
-  //this is MENU 2
-  supportSubMenu[0][0] = "UAV drone";
-  supportSubMenu[0][1] = "grid overload";
-  supportSubMenu[0][2] = "sniper support";
-  supportSubMenu[1][0] = "threat analysis";
-  supportSubMenu[1][1] = "airstrike";
-  supportSubMenu[1][2] = "helicopter on station";
+  //this is MENU 20
+  supportMenuItems[0][0] = "bandage";
+  supportMenuItems[0][1] = "cauterize";
+  supportMenuItems[0][2] = "decoy";
+  supportMenuItems[1][0] = "threat analysis";
+  supportMenuItems[1][1] = "airstrike";
+  supportMenuItems[1][2] = "atk. chopper";
 
   xCoordinate[0] = 120;
   xCoordinate[1] = 250;
@@ -238,8 +245,11 @@ void initializeObjects() {
 
   gunshop = new Loadout();
 
-  battleMenu = new BattleMenu();
-  attackMenu = new BattleMenu();
+  mainBattleMenu = new BattleMenu(0,0);
+  attackMenu = new BattleMenu(10,1);
+  supportMenu = new BattleMenu(20,1);
+  confirmAttack = new BattleMenu();
+  confirmSupport = new BattleMenu();
 
   battleGrid = new BattleGrid(zone, int(random(5)), int(random(5)));
 

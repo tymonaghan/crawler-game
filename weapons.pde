@@ -9,4 +9,6 @@ class Weapon{
     weaponName = name_;
     weaponNote = note_;
   } //end weapon constructor
+  
+  
 } //end Weapons class

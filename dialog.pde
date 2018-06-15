@@ -29,7 +29,7 @@ class Dialog {
     rectMode(CORNER);
     rect(.2*width, .2*height, .6*width, .6*height);
     fill(colorScheme[4]);
-    textMode(CORNER);
+    rectMode(CORNER);
 
     for (int i = 0; i < cutsceneStrings.length; i++) { //show the scrolling text. using map() or bound() might be necessary here.
       if (counter <150) {
@@ -80,7 +80,7 @@ class Dialog {
     //write the lines of text on-screen
     fill(colorScheme[4]);
 
-    textMode(CENTER);
+    rectMode(CENTER);
     textAlign(CENTER, CENTER);
     text(scriptStrings[counter], .5*width, .25*height, .55*width, .25*height);
     if (mousePressed == true && counter < scriptStrings.length-1 && doubleClickBuffer >10) { //if player clicks, advance the conversation to the next line(counter++)

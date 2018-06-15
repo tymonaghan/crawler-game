@@ -1,5 +1,5 @@
 class PlayerCharacter {
-  int hitPoints, bestWeapon;
+  int hitPoints, bestWeapon, activeWeapon;
   int [] playerInventory;
   int status = 0;
   int accuracy;
@@ -10,6 +10,7 @@ class PlayerCharacter {
     hitPoints = hp_;
     accuracy = -100;
     intelPoints = 100;
+    activeWeapon = 0;
   } //end playerCharacter constructor
 
   int getLightArmsSkill() { //should eventually make an array of skill levels
@@ -19,6 +20,14 @@ class PlayerCharacter {
   int getStatus() {
     return status;
   }
+  
+  int getActiveWeaponSlot() {
+    return activeWeapon;
+  } // getActiveWeaponSlot
+  
+  void setActiveWeaponSlot(int setter_){
+    activeWeapon = setter_;
+  } // end setActiveWeaponSlot
 
   void setStatus(int num_) {
     status = num_;
@@ -140,7 +149,7 @@ class PlayerCharacter {
       } //end if redtint
       image(inventoryIcons[ii], barX+padding, barY+padding*2+barHeight/2+20*ii, .02*width, .02*width); //inventory icons
       fill(colorScheme[2]);
-      textMode(CORNER);
+      rectMode(CORNER);
       textAlign(LEFT, CENTER);
       textSize(16);
       fill(255);
@@ -162,9 +171,9 @@ class PlayerCharacter {
 
   void hurtPlayer(int hp_) {
     int hurt = hp_;
-    this.hitPoints -= hurt;
-    text("goon hit you for "+hurt+" in damage", width/2, height/2);
-    delay(200);
+    playerCharacter.hitPoints -= hurt;
+    //text("goon hit you for "+hurt+" in damage", width/2, height/2);
+    //delay(200);
   } //end hurtPlayer
 
   /* so far this is being handled by the loadout class
@@ -192,25 +201,27 @@ class PlayerCharacter {
   int doAttack(int accy_) { //feed accuracy offset to this - lower is better, 0 is perfect.
     int accuracyOffset = abs(accy_);
     int damage = -5;
-    int ticker = battleMenu.getTicker();
+    int ticker = mainBattleMenu.getTicker();
     if (ticker > 0) { //if wrapper to try to stop double-calling this function --seems to work
       if (playerInventory[6] < 1) {
         fill(colorScheme[2]);
         text("No ammo, cancelling attack", width/2, height/2);
         delay(150);
-        battleMenu.resetMenuLevel();
+        mainBattleMenu.setActiveMenu(0);
+        combatState = 0;
         return 0;
       } else {
         playerInventory[6] --;
         fill(colorScheme[2]);
         text("HIT", width/2, height/2);
         playerCharacter.setStatus(1);
+        playerCharacter.setAccuracy(-99);
+        mainBattleMenu.resetCursor();
         goon.setHitPoints(-3, 0); //(damage, damagetype)
         delay(100);
-        sequence++;
-        //advanceToNextTurn();
+        advanceToNextTurn();
       }
-      battleMenu.resetTicker();
+      mainBattleMenu.resetTicker();
     } // end if wrapper
     return damage;
   } //end doAttack
@@ -247,9 +258,9 @@ class PlayerCharacter {
     rectMode(CORNER);
     strokeWeight(3);
     textAlign(BOTTOM, LEFT);
-    textMode(CORNER);
+    rectMode(CORNER);
     if (index < 4) { //for the first four items, show popup with item name, inv slot, and description?
-      rect(mouseX+20, mouseY+10, .3*width, .2*height); //draw popup rectangle
+      rect(mouseX+20, mouseY+10, .35*width, .2*height); //draw popup rectangle
       fill(0);
       //if (playerInventory[index] == 0) { //if the inventory slot is at 0...
       //  text("[empty]", mouseX+30, mouseY+30);  // say it;s EMPTY
@@ -258,7 +269,7 @@ class PlayerCharacter {
       //}
       text("\nweapon type: "+names[index], mouseX+30, mouseY+30);
     } else {
-      rect(mouseX+20, mouseY+10, .2*width, .12*height);
+      rect(mouseX+20, mouseY+10, .25*width, .12*height);
       fill(0);
       textAlign(TOP, LEFT);
       text(names[index]+"\n"+itemNotes.get(index), mouseX+30, mouseY+10, .2*width, .12*height);
@@ -273,7 +284,7 @@ class PlayerCharacter {
     rectMode(CORNER);
     strokeWeight(3);
     textAlign(LEFT, TOP);
-    textMode(CORNER);
+    rectMode(CORNER);
     rect(mouseX+20, mouseY, .4*width, .5*height);
 
     fill(0);
@@ -283,4 +294,6 @@ class PlayerCharacter {
     } //end for loop
     text("effects: "+playerEffects, mouseX+25, mouseY + 30 * 8);
   } //end lifeBarPopup()
+  
+
 }

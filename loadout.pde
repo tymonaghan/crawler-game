@@ -63,7 +63,7 @@ class Loadout {
       } // end if you can afford it (right now there's no else if you can't afford it but this should prevent negative numbers
     }  //end if mousePressed
     popStyle();
-    ticker++;
+    mainBattleMenu.ticker++;
   } //end loadoutPopup
 
   void addItem(int i_) {

@@ -8,7 +8,7 @@
  rectMode(CORNER);
  rect(menuX+20, menuY+20, menuWidth, menuHeight);
  fill(textColor);
- textMode(CORNER);
+ rectMode(CORNER);
  textAlign(LEFT, TOP);
  text("Knife",menuX+40,menuY+30);
  noLoop();
@@ -46,14 +46,14 @@ void credits(){
     rectMode(CORNER);
     rect(menuX, menuY, menuWidth, menuHeight);
     fill(textColor);
-    textMode(CORNER);
+    rectMode(CORNER);
     textAlign(LEFT, CENTER);  
     for (int x = 0; x <2; x++) {
       for (int y = 0; y<3; y++) {
         text(mainBattleMenu[x][y], xCoordinate[x], yCoordinate[y]);
       }//end for loop-y
     } // end for loop -x
-    ticker++;
+    mainBattleMenu.ticker++;
   } // end display
 
   int drawCursor() { //draw cursor and respond with where it's pointing -- this is pretty hardcoded to the battleMenu right now - might be better to make a separate cursor for subMenus
@@ -118,7 +118,7 @@ void credits(){
     fill(textColor);
     textAlign(LEFT, CENTER);
     text("Fire pistol (l. ammo)", menuX+tier*75+30, menuY + tier*15 +20);
-    ticker++;
+    mainBattleMenu.ticker++;
     if (battleMenu.getMenuLevel() == 1) {
       attackMenu.drawSubCursor(items, tier);
     } // end if menuLevel
@@ -171,7 +171,7 @@ void credits(){
       battleMenu.incMenuLevel();
       return dmg;
     } // end if mouse pressed do aiming minigame
-    ticker++;
+    mainBattleMenu.ticker++;
     return 0;
   } // end confirmAttack
 
@@ -204,3 +204,27 @@ void credits(){
 } //end BattleMenu class
 
 */
+
+  /*
+  if (menuLevel > 0) {
+   attackMenu.displaySubMenu(1, 1, false);
+   }
+   
+   if (menuLevel > 1) {
+   battleMenu.confirmAttack(10); //pass the ID of the weapon used to attack...
+   }
+   
+   if (menuLevel ==3 ) {
+   int dmg = battleMenu.confirmAttack(10); //hard-coded with pellet gun ID for now.
+   battleMenu.aimGame(dmg);
+   } 
+   
+   if (menuLevel == 4) { //if the menu gets here, the attack has taken place - but this is a dumb way to handle this.
+   int accuracy = playerCharacter.getAccuracy(); //lower is better
+   //playerCharacter.doAttack(accuracy); //lower is better
+   int damage = playerCharacter.doAttack(accuracy);
+   delay(550);
+   goon.setHitPoints(damage, 0);
+   advanceToNextTurn();
+   }//end ifs
+   */
