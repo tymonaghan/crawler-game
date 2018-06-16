@@ -40,11 +40,15 @@ class Enemy {
     int enemyDamage = int(random(5, 12)); //randomize enemy damage
     playerCharacter.hurtPlayer(enemyDamage); //hurt the player by that amount
     enemyState = 2;
-    return;
+    fill(colorScheme[3]);
+    stroke(colorScheme[4]); 
+    this.drawTurnReport();
+    setDelay();
+    //return;
   }//end enemy.takeTurn
 
-  void drawTurnReport() {
-    println("you are reaching the goon.drawTurnReport function");
+    void drawTurnReport() {
+    println("you are reaching the enemy.drawTurnReport function");
     int ticker = mainBattleMenu.getTicker();
     fill( colorScheme[3]); //static colors
     stroke (colorScheme[4]);
@@ -55,12 +59,11 @@ class Enemy {
     rectMode(CENTER);
     rect(width/2, height/2, width/5, height/5);
     fill(colorScheme[4]);
-    text("enemy "+enemyTypes.get(0)+" attacked ya \nclick to advance", width/2, height/2);
-    if (keyPressed == true && key == ' ' && ticker >10) {
-      advanceToNextTurn();
-    }
+    text("enemy "+enemyTypes.get(0)+" attacked ya \nand did ___ damage", width/2, height/2);
     ticker++;
-  } //end notifyPlayerofTurnResults
+    setDelay();
+    advanceToNextTurn();
+  } //end drawTurnReport
   
   
 } //end enemy class

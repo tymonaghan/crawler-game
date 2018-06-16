@@ -7,15 +7,22 @@ void battleDirector() { //use this to call players turn by turn and end the batt
     }
     displayTurnPanel(); //if goon is alive, display the turn panel
     battle(); // always call battle() (draw grid, enemies, statusbar, and character)
-    if (turnOrder.get(0) == 1) { //if its the player's turn, call playersTurn()
-            enemyState = 0;
+    int[] turnOrderArray = turnOrder.array();
+    if (turnOrderArray[0] == 1) { //if its the player's turn, call playersTurn()
+            
 
       playersTurn();
-    } else if (turnOrder.get(0) == 0){ //if it's not the player's turn, call enemyTurn()
-            combatState =7; 
+      
+      
+    } else if (turnOrderArray[0] == 0){ //if it's not the player's turn, call enemyTurn()
+            
       enemyTurn();
+      
+      
     } // end else
     playerCharacter.statusBar(playerInventory); // feed playerInventory array to the sstatusbar
+      println(turnOrderArray[0]);
+
   } //end if goon is alive
   else { //but if goon is dead, debrief the battle
     debriefBattle();
@@ -130,8 +137,8 @@ void playersTurn() {
     break;
 
   case CombatState.attacking: //action 5: attacking
-    playerCharacter.doAttack(50);
-
+    playerCharacter.doAttack();
+playerCharacter.drawTurnReport();
     break;
 
   case CombatState.debrief: //action 5 debrief
@@ -153,6 +160,7 @@ void enemyTurn() { // enemy's turn
     break;
   case EnemyState.turnReport: //2 state
     goon.drawTurnReport();
+    setDelay();
     break;
   } //end enemyState switch
 } //end enemyTurn
@@ -160,16 +168,21 @@ void enemyTurn() { // enemy's turn
 
 
 void advanceToNextTurn() {  //move the turnOrder down by 1, advance to next turn!
-  delay(100);
-  //combatState = 0;
+  combatState = 7; //set player to "waiting"
+  enemyState = 0; // set enemy to "waiting"
   for (int i = 0; i < turnOrder.size()-1; i++) { //bump the turnOrder array down by 1
     int x = turnOrder.get(i+1);
     turnOrder.set(i, x);
   } //end for loop to bump turns down
+    
   playerCharacter.setAccuracy(-100);
-  playerCharacter.setStatus(0);
   mainBattleMenu.resetMenuLevel();
   mainBattleMenu.resetTicker();
+    if (turnOrder.get(0) == 1){
+combatState = 0;
+    } else if (turnOrder.get(0) == 0) {
+      enemyState=1;
+    }
 } // end advanceToNextTurn
 
 void debriefBattle() { //screen to give XP and battle results. can assign each combat kill/action to a list/array, then reference that from this screen (wipe the array when done on this screen)

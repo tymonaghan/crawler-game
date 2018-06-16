@@ -11,6 +11,7 @@ void playGame() {
 
   case EGameState.battle:
     battleDirector();
+    loop();
     break;
 
   case EGameState.loadout:

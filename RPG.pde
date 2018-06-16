@@ -11,7 +11,7 @@ Dialog dialog;
 Weapon[] weapons = new Weapon[40];
 
 boolean walkState = true;
-boolean playersTurn, battleOrderSet = false;
+boolean playersTurn, battleOrderSet, delay = false;
 
 int mX, mY, systemBusy, gameState,combatState,zone,difficulty,enemyState = 0;
 int frames = 1;
@@ -75,6 +75,10 @@ void setup() {
 }
 
 void draw() {
+  if (delay){
+    delay(1000);
+    delay = false;
+  } //end delay
   playGame();
   crawlerText(frames);
   printInventory();
@@ -87,3 +91,7 @@ void draw() {
 
   frames++;
 } //end draw
+
+void setDelay(){
+  delay = true;
+} // end setDelay

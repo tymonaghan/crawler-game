@@ -20,18 +20,14 @@ class PlayerCharacter {
   int getStatus() {
     return status;
   }
-  
+
   int getActiveWeaponSlot() {
     return activeWeapon;
   } // getActiveWeaponSlot
-  
-  void setActiveWeaponSlot(int setter_){
+
+  void setActiveWeaponSlot(int setter_) {
     activeWeapon = setter_;
   } // end setActiveWeaponSlot
-
-  void setStatus(int num_) {
-    status = num_;
-  } //end setStatus
 
   void modIntelPoints(int intelModBy_) {
     intelPoints = intelPoints + intelModBy_;
@@ -40,25 +36,6 @@ class PlayerCharacter {
   int getIntelPoints () {
     return intelPoints;
   } //end get intel points
-
-  void playerAction(int i) { //  0 attack, 1 advance, 2 support, 3 flank, 4 cover, 5 retreat
-    if (i==0) { //code for attack
-      //attackMenu.displaySubMenu(1, 1, false); // needs tier, rows, alert
-      status=0;
-      println("attack");
-      return;
-    } else if (i ==1) {
-      println("advance");
-    } else if (i == 2) {
-      println("support");
-    } else if (i == 3) {
-      println("flank");
-    } else if (i == 4) {
-      println("cover");
-    } else if (i == 5) {
-      println("retreat");
-    }
-  } //end playerAction
 
   void drawInCombat() {
     int status = playerCharacter.getStatus();
@@ -198,32 +175,33 @@ class PlayerCharacter {
     image(imageAssets[bestWeapon], .45*width, 0.25*height, imageAssets[bestWeapon].width*3, imageAssets[bestWeapon].height*3);
   } //end loadoutScreen
 
-  int doAttack(int accy_) { //feed accuracy offset to this - lower is better, 0 is perfect.
-    int accuracyOffset = abs(accy_);
+  void doAttack() { //feed accuracy offset to this - lower is better, 0 is perfect.
+    // int accuracyOffset = abs(accy_);
     int damage = -5;
     int ticker = mainBattleMenu.getTicker();
     if (ticker > 0) { //if wrapper to try to stop double-calling this function --seems to work
+      /*
       if (playerInventory[6] < 1) {
-        fill(colorScheme[2]);
-        text("No ammo, cancelling attack", width/2, height/2);
-        delay(150);
-        mainBattleMenu.setActiveMenu(0);
-        combatState = 0;
-        return 0;
-      } else {
-        playerInventory[6] --;
-        fill(colorScheme[2]);
-        text("HIT", width/2, height/2);
-        playerCharacter.setStatus(1);
-        playerCharacter.setAccuracy(-99);
-        mainBattleMenu.resetCursor();
-        goon.setHitPoints(-3, 0); //(damage, damagetype)
-        delay(100);
-        advanceToNextTurn();
-      }
-      mainBattleMenu.resetTicker();
-    } // end if wrapper
-    return damage;
+       fill(colorScheme[2]);
+       text("No ammo, cancelling attack", width/2, height/2);
+       delay(150);
+       mainBattleMenu.setActiveMenu(0);
+       combatState = 0;
+       return 0;
+       } else {
+       */
+      playerInventory[6] --;
+      //mainBattleMenu.drawTurnReport();
+
+      playerCharacter.setAccuracy(-99);
+      mainBattleMenu.resetCursor();
+      goon.setHitPoints(-3, 0); //(damage, damagetype)
+      advanceToNextTurn();
+      combatState = 7;
+    }
+    mainBattleMenu.resetTicker();
+    //} // end if wrapper
+    return;  //(trying this as a void, instead of int
   } //end doAttack
 
   void setAccuracy(int accy_) {
@@ -295,5 +273,21 @@ class PlayerCharacter {
     text("effects: "+playerEffects, mouseX+25, mouseY + 30 * 8);
   } //end lifeBarPopup()
   
-
+    void drawTurnReport() { 
+    println("you are reaching the playerCharacter.drawTurnReport function");
+    int ticker = mainBattleMenu.getTicker();
+    fill( colorScheme[3]); //static colors
+    stroke (colorScheme[4]);
+    if (playerCharacter.hitPoints <25) {
+      stroke(colorScheme[2]);
+    } //end if
+    strokeWeight(5);
+    rectMode(CENTER);
+    rect(width/2, height/2, width/5, height/5);
+    fill(colorScheme[4]);
+    text("you attacked "+enemyTypes.get(0)+"\nand did ___ dmg", width/2, height/2);
+    ticker++;
+    setDelay();
+    
+  } //end drawTurnReport
 }

@@ -181,9 +181,10 @@ class BattleMenu {
     ellipse(.45*width, battleGrid.getGridRowCenter(1), accy*2.5, accy*2.5); //initial size of circle, may want to play with multipliers for acc'y based on skill or enemy or cover
     if ((keyPressed == true && key == ' ' && ticker > 10) || (accy > 99)) {  //complete attack if mousepressed OR accuracy-meter runs out.
       //battleMenu.incMenuLevel();
-      playerCharacter.doAttack(5); //change this hardcoded 5 to dmg value
+      //playerCharacter.doAttack(); //change this hardcoded 5 to dmg value
       ticker = 0;
-      return;
+      combatState = 5;
+      //return;
     } else {
       playerCharacter.changeAccuracy(3);
     } //end if triggers for completing the attack
@@ -199,6 +200,8 @@ class BattleMenu {
     triangle(x-5, y+10, x-10, y+15, x-10, y+5);
   } //end draw triangle cursor
 
+
+  
   int getTicker() {
     return ticker;
   }  //end getTicker
