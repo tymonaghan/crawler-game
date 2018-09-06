@@ -269,4 +269,5 @@ void initializeImages() {
   imageAssets[4] = loadImage("ctu-icon.PNG");
   imageAssets[5] = loadImage("robit.png");
   imageAssets[6] = loadImage("skyline.png");
+  CTUscreen = loadImage("CTUscreen.png");
 } //end initializeImages

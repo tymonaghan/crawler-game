@@ -51,7 +51,7 @@ class Loadout {
 
     if (itemNumber <4 && playerInventory[itemNumber] != 0) { //if you don't have any, offer to buy
       text("click to upgrade "+labels[itemNumber]+"\nfrom: "+weaponList.get(itemNumber*10+playerInventory[itemNumber])+"\nto: "+weaponList.get(itemNumber*10+playerInventory[itemNumber]+1)+"\nitem cost: "+itemPrices.get(itemNumber)+"\n"+itemNotes.get(itemNumber), mouseX+5, mouseY+5);
-    } else {  
+    } else {  //something is messed up here and it crashes if you mouse over the grenade items in Loadout
       text(labels[itemNumber]+" [none]\nclick to buy "+weaponList.get(playerInventory[itemNumber]+(itemNumber*10)+1)+"\nitem cost: "+itemPrices.get(itemNumber)+"\n"+itemNotes.get(itemNumber), mouseX+5, mouseY+5);
     }
 
@@ -60,7 +60,7 @@ class Loadout {
         playerInventory[itemNumber] = playerInventory[itemNumber]+1;  // add 1 to the playerInventory array at the proper index (add inventory)
         playerCharacter.modIntelPoints(-itemPrices.get(itemNumber)); //deduct cost of item via playerChar.modIntelPoints
         ticker = 0; //reset ticker to prevent multi-clicks
-      } // end if you can afford it (right now there's no else if you can't afford it but this should prevent negative numbers
+      } // end if you can afford it (add an 'else' later to inform player that they dont have enough intel points
     }  //end if mousePressed
     popStyle();
     mainBattleMenu.ticker++;

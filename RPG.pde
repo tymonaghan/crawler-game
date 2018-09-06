@@ -13,15 +13,16 @@ Weapon[] weapons = new Weapon[40];
 boolean walkState = true;
 boolean playersTurn, battleOrderSet, delay = false;
 
-int mX, mY, systemBusy, gameState,combatState,zone,difficulty,enemyState = 0;
+int mX, mY, systemBusy, /* gameState,*/combatState, zone, difficulty, enemyState, globalTicker = 0;
 int frames = 1;
 //int intelPoints = 100; (now part of playerCharacter object)
 int[] playerInventory = new int[8];
 int[] playerLevels = new int [8];
 int[]xCoordinate = new int[5];
 int[]yCoordinate = new int[6];
+char[]playerNameChars=new char[0];
 IntList itemPrices, turnOrder;
-IntDict loadout,weaponDamage, playerAttributes;
+IntDict loadout, weaponDamage, playerAttributes;
 
 color[] colorScheme  = new color[16];
 
@@ -29,11 +30,11 @@ String[] playerEffects;
 String[][] mainBattleMenuItems = new String[2][3];
 String[][] attackMenuItems = new String[2][3];
 String[][] supportMenuItems = new String[2][3];
-StringList itemNotes,commandList,weaponList, textsList, enemyTypes;
+StringList itemNotes, commandList, weaponList, textsList, enemyTypes;
 
 PImage[] inventoryIcons = new PImage[8];
 PImage[] imageAssets = new PImage[7]; // change this number to add images as i work
-PImage walkingCharacter1, walkingCharacter2, walkingCharacter3, coveringCharacter, firingCharacter, invIcon0, invIcon1, invIcon2, invIcon3, invIcon4, invIcon5, invIcon6, invIcon7, armed0, armed1;
+PImage walkingCharacter1, walkingCharacter2, walkingCharacter3, coveringCharacter, firingCharacter, invIcon0, invIcon1, invIcon2, invIcon3, invIcon4, invIcon5, invIcon6, invIcon7, armed0, armed1, CTUscreen;
 ArrayList menuArrays;
 
 
@@ -44,8 +45,10 @@ static class EGameState {
   static final int loadout = 3;
   static final int dialog = 4;
   static final int cutscene = 5;
+  static final int recruit = 6;
   static final int dead = 99;
 }
+int gameState =5;
 
 static class CombatState {
   static final int tier0 = 0;
@@ -64,10 +67,11 @@ static class EnemyState {
   static final int turnReport = 2;
 }
 
+/*
 static class Zone {
   static final int urban = 0;
   static final int desert = 1;
-}
+}*/
 
 void setup() {
   size(800, 600);
@@ -75,23 +79,28 @@ void setup() {
 }
 
 void draw() {
-  if (delay){
+  if (delay) {
     delay(1000);
     delay = false;
   } //end delay
   playGame();
   crawlerText(frames);
   printInventory();
-  talkTest.quickDisplay("radio");
-  talkTest.clickCheck(mouseX,mouseY,4);
+  talkTest.quickDisplay("recruit"); //debug buttons to check new features
+  talkTest.clickCheck(mouseX, mouseY, 6); //debug buttons to check new features
   //println(battleMenu.getTicker());
   //println(turnOrder);
   //println("goonHP"+goon.getHitPoints());
 
+  globalTicker++;
 
   frames++;
 } //end draw
 
-void setDelay(){
+void setDelay() {
   delay = true;
 } // end setDelay
+
+void keyPressed(){
+  redraw();
+}

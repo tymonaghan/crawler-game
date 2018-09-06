@@ -4,6 +4,12 @@ class PlayerCharacter {
   int status = 0;
   int accuracy;
   int intelPoints;
+  int charactersTyped=0;
+  int recruitProgress=0;
+  String firstName;
+  String lastName;
+  char keyy ='a';
+  boolean redrawCTUscreen = true;
   // boolean walkSwitcher = true;
 
   PlayerCharacter(int hp_) {
@@ -12,6 +18,15 @@ class PlayerCharacter {
     intelPoints = 100;
     activeWeapon = 0;
   } //end playerCharacter constructor
+
+  void setFirstName(String name) {
+    firstName = name;
+  } // end setFirstName
+
+  void setLastName(String name) {
+    lastName = name;
+  } //end setLastName
+
 
   int getLightArmsSkill() { //should eventually make an array of skill levels
     return 5;
@@ -272,8 +287,8 @@ class PlayerCharacter {
     } //end for loop
     text("effects: "+playerEffects, mouseX+25, mouseY + 30 * 8);
   } //end lifeBarPopup()
-  
-    void drawTurnReport() { 
+
+  void drawTurnReport() { //popup showing the results of the player's turn, disappears after delay
     println("you are reaching the playerCharacter.drawTurnReport function");
     int ticker = mainBattleMenu.getTicker();
     fill( colorScheme[3]); //static colors
@@ -288,6 +303,125 @@ class PlayerCharacter {
     text("you attacked "+enemyTypes.get(0)+"\nand did ___ dmg", width/2, height/2);
     ticker++;
     setDelay();
-    
   } //end drawTurnReport
-}
+
+  void incrementRecruitProgress(int increment_) {
+    int increment = increment_;
+    recruitProgress+=increment;
+  } //end incrementRecruitProgress
+
+  int getRecruitProgress() {
+    return recruitProgress;
+  } //end getRecruitProgress
+
+  void redrawCTUscreen() {
+    playerCharacter.redrawCTUscreen = true;
+  } // end redrawCTUscreen
+
+  void recruitMenu() {
+    cursor(TEXT);
+    println("**recruit progress:"+recruitProgress+"**");
+    if (redrawCTUscreen) {
+      imageMode(CENTER);
+      image(CTUscreen, width/2, height/2, .75*width, .6*height);
+      redrawCTUscreen=false;
+    }
+    //int recruitProgresss = getRecruitProgress(); //do i need to use getRecruitProgress here?
+    if (playerCharacter.getRecruitProgress() ==0) {
+      playerCharacter.firstNamePrompt();
+      playerCharacter.listenForName(0);
+    } else if (playerCharacter.getRecruitProgress() ==1) {
+      playerCharacter.lastNamePrompt();
+      playerCharacter.listenForName(1);
+    } else if (playerCharacter.getRecruitProgress() ==2) {
+    }
+  } //end recruitMenu
+
+
+  void firstNamePrompt() {
+    //then the prompt
+    stroke(colorScheme[0]);
+    rectMode(CORNER);
+    strokeWeight(3);
+    textAlign(LEFT, TOP);
+    rectMode(CENTER);
+    fill(255);
+    textFont(menuFont);
+    rectMode(CORNER);
+    text("FIRST NAME:", .35*width, .4*height, .3*width, .3*height);
+    stroke(0);
+    strokeWeight(2);
+    stroke(colorScheme[0]);
+    fill(255);
+    rect(.4*width, .45*height, .2*width, .05*height);
+  }//end firstNamePrompt
+
+  void lastNamePrompt() {
+    //show the CTUscreen background:
+    imageMode(CENTER);
+    image(CTUscreen, width/2, height/2, .75*width, .6*height);
+    // then the prompt:
+    stroke(colorScheme[0]);
+    rectMode(CORNER);
+    strokeWeight(3);
+    textAlign(LEFT, TOP);
+    rectMode(CENTER);
+    fill(255);
+    textFont(menuFont);
+    rectMode(CORNER);
+    text("LAST NAME:", .35*width, .4*height, .3*width, .3*height);
+    stroke(0);
+    strokeWeight(2);
+    stroke(colorScheme[0]);
+    fill(255);
+    rect(.4*width, .45*height, .2*width, .05*height); //white text box
+  }//end lastNamePrompt
+
+  void listenForName(int whichName_) {
+    fill(0);
+ 
+    String tempName = new String(playerNameChars);
+
+    if (keyPressed == true && globalTicker > 9 ) { //this globalTicker shit is so hacky - there has to be a smarter way to do this
+      if (key == ENTER || key == RETURN) {
+        //add a line to check that the char[] has contents
+        globalTicker=1;
+        if (whichName_ == 0) {
+          playerCharacter.setFirstName(tempName.toUpperCase());
+                  playerNameChars= new char[0];
+
+        } else if (whichName_ == 1) {
+          
+          playerCharacter.setLastName(tempName.toUpperCase());
+                  playerNameChars= new char[0];
+
+        } // end if for assigning the name
+        playerCharacter.incrementRecruitProgress(1);
+        redrawCTUscreen();
+        playerNameChars= new char[0];
+        charactersTyped=0;
+      } else if (key == BACKSPACE || key == DELETE) { //end if enter is pressed, begin if delete is pressed
+        playerNameChars= new char[0];
+        rectMode(CORNER);
+        fill(255);
+        charactersTyped=0;
+        rect(.4*width, .45*height, .2*width, .05*height);
+      }// end if delete is pressed
+      // keyy = key;
+      playerNameChars = expand(playerNameChars, playerNameChars.length+1);
+      if (whichName_ ==0){
+      playerNameChars[charactersTyped] = key;
+      } else if (whichName_ == 1){
+              playerNameChars[charactersTyped-1] = key;
+      }
+      //playerNameChars = append(playerNameChars, key);
+      globalTicker = 5;
+      charactersTyped++;
+    } //end if key pressed
+    if (playerNameChars.length >0){
+    rectMode(CORNER);
+    text(tempName, .42*width, .45*height);
+          println(playerNameChars);
+    } // end if playerNameChars length is not zero
+  } //end listenForName
+} // end playerCharacter

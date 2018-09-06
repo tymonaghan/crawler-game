@@ -50,6 +50,7 @@ class Button {
     if (mousePressed == true) {
       if (mX > xPos-buttonWidth/2 && mouseX < xPos + buttonWidth/2 && mouseY <yPos+buttonHeight/2 && mouseY > yPos-buttonHeight/2) {
         gameState = buttonFunction;
+        globalTicker=0;
       } //end if for checking if mouse cursor is inside button
     } //end if for checking if mousePressed
   } //end clickCheck function

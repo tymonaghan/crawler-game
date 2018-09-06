@@ -29,6 +29,10 @@ void playGame() {
     case EGameState.cutscene:
     dialog.playCutscene();
     break;
+    
+    case EGameState.recruit:
+    playerCharacter.recruitMenu();
+    break;
 
   } // end switch
 } //end playGame
