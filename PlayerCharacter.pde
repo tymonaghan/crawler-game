@@ -408,7 +408,7 @@ class PlayerCharacter {
         rect(.4*width, .45*height, .2*width, .05*height);
       }// end if delete is pressed
       // keyy = key;
-      playerNameChars = expand(playerNameChars, playerNameChars.length+1);
+      playerNameChars = expand(playerNameChars, playerNameChars.length-1);
       if (whichName_ ==0){
       playerNameChars[charactersTyped] = key;
       } else if (whichName_ == 1){
